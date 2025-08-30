@@ -1,0 +1,3444 @@
+COMPREHENSIVE CODE DUMP
+Project Name : Samriddh AI
+Generated    : 2025-08-30 17:20:50
+Files        : 27
+================================================================================
+
+PROJECT FILE STRUCTURE:
+├── .gitignore
+├── README.md
+├── eslint.config.js
+├── index.html
+├── package.json
+├── postcss.config.js
+├── src
+    ├── App.tsx
+    ├── components
+        ├── Chat.tsx
+        ├── ConversationList.tsx
+        ├── CreateProjectModal.tsx
+        ├── Footer.tsx
+        ├── Header.tsx
+        ├── OrchestrationPanel.tsx
+        ├── ProjectSelector.tsx
+        ├── RightPanel.tsx
+        ├── Sidebar.tsx
+    ├── hooks
+        ├── useOrchestrationWebSocket.ts
+    ├── layout
+        ├── MainLayout.tsx
+    ├── main.tsx
+    ├── services
+        ├── orchestrationApi.ts
+    ├── styles
+        ├── index.css
+    ├── vite-env.d.ts
+├── tailwind.config.js
+├── tsconfig.app.json
+├── tsconfig.json
+├── tsconfig.node.json
+├── vite.config.ts
+================================================================================
+
+// Path: .gitignore
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+================================================================================
+
+// Path: README.md
+# React + TypeScript + Vite
+
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+
+```js
+export default tseslint.config([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+
+      // Remove tseslint.configs.recommended and replace with this
+      ...tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      ...tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      ...tseslint.configs.stylisticTypeChecked,
+
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
+
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default tseslint.config([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
+
+================================================================================
+
+// Path: eslint.config.js
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import tseslint from 'typescript-eslint'
+import { globalIgnores } from 'eslint/config'
+
+export default tseslint.config([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      js.configs.recommended,
+      tseslint.configs.recommended,
+      reactHooks.configs['recommended-latest'],
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+    },
+  },
+])
+
+================================================================================
+
+// Path: index.html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Samriddh AI</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
+================================================================================
+
+// Path: package.json
+{
+  "name": "samriddh-ai-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@headlessui/react": "^1.7.19",
+    "@tailwindcss/typography": "^0.5.16",
+    "clsx": "^2.0.0",
+    "framer-motion": "^10.18.0",
+    "lucide-react": "^0.294.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-markdown": "^10.1.0",
+    "react-router-dom": "^6.20.0",
+    "remark-gfm": "^4.0.1",
+    "zustand": "^4.4.7"
+  },
+
+  "devDependencies": {
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "^18.2.15",
+    "@typescript-eslint/eslint-plugin": "^8.39.0",
+    "@typescript-eslint/parser": "^8.39.0",
+    "@vitejs/plugin-react": "^4.1.1",
+    "autoprefixer": "^10.4.16",
+    "eslint": "^8.53.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.4",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.3.5",
+    "typescript": "^5.2.2",
+    "vite": "^4.5.0"
+  }
+}
+
+================================================================================
+
+// Path: postcss.config.js
+export default {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+}
+
+================================================================================
+
+// Path: src/App.tsx
+import MainLayout from './layout/MainLayout';
+
+function App() {
+  return <MainLayout />;
+}
+
+export default App;
+
+================================================================================
+
+// Path: src/components/Chat.tsx
+// frontend/src/components/Chat.tsx
+
+import { useState, useEffect, useRef } from 'react';
+import { Send, Bot, Brain, Copy, Download } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+
+interface MessageType {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  thinkingProcess?: string;
+  timestamp: string;
+}
+
+interface ChatProps {
+  projectId: number | null;
+  conversationId: number | null;
+  onNewConversation: (conversationId: number, projectId: number) => void;
+  directoryContext?: any[]; // 🆕 Accept directory context file list
+}
+
+export default function Chat({ projectId, conversationId, onNewConversation, directoryContext = [] }: ChatProps) {
+  const [ws, setWs] = useState<WebSocket | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const [messages, setMessages] = useState<MessageType[]>([]);
+  const [input, setInput] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const [showThinking, setShowThinking] = useState<string | null>(null);
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const loadConversationHistory = (convId: number) => {
+    fetch(`http://localhost:8000/api/conversations/${convId}/messages`)
+      .then(res => res.json())
+      .then(data => {
+        const history: MessageType[] = data.map((m: any) => ({
+          id: m.id.toString(),
+          role: m.role,
+          content: m.content,
+          thinkingProcess: m.thinking_process,
+          timestamp: m.created_at,
+        }));
+        setMessages(history);
+      })
+      .catch(console.error);
+  };
+
+  // Connect/reconnect WS when project changes
+  useEffect(() => {
+    const socket = new WebSocket('ws://localhost:8000/ws/chat');
+
+    socket.onopen = () => setIsConnected(true);
+    socket.onclose = () => setIsConnected(false);
+
+    socket.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+
+        if (data.type === 'new_conversation') {
+          onNewConversation(data.conversation_id, data.project_id);
+          loadConversationHistory(data.conversation_id);
+        } else if (data.type === 'typing') {
+          setIsTyping(true);
+        } else if (data.type === 'response') {
+          setIsTyping(false);
+          setMessages(prev => [
+            ...prev,
+            {
+              id: Date.now().toString(),
+              role: 'assistant',
+              content: data.message,
+              thinkingProcess: data.thinking_process,
+              timestamp: data.timestamp || new Date().toISOString()
+            }
+          ]);
+        } else if (data.type === 'error') {
+          setIsTyping(false);
+          setMessages(prev => [
+            ...prev,
+            {
+              id: Date.now().toString(),
+              role: 'assistant',
+              content: `Error: ${data.message}`,
+              timestamp: new Date().toISOString()
+            }
+          ]);
+        }
+      } catch (err) {
+        console.error('WS parse error', err);
+      }
+    };
+
+    setWs(socket);
+    return () => socket.close();
+  }, [projectId, onNewConversation]);
+
+  // Load history when conversation changes
+  useEffect(() => {
+    if (conversationId) {
+      loadConversationHistory(conversationId);
+    } else {
+      setMessages([]);
+    }
+  }, [conversationId]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const sendMessage = () => {
+    if (!ws || !isConnected || !input.trim() || !projectId) return;
+
+    // 🆕 Merge the directoryContext into project_context
+    ws.send(JSON.stringify({
+      message: input.trim(),
+      conversation_id: conversationId,
+      project_id: projectId,
+      project_context: {
+        files: directoryContext, // full file list from RightPanel
+        tech_stack: ['FastAPI', 'React', 'TypeScript'],
+        project_type: 'fullstack'
+      }
+    }));
+
+    setMessages(prev => [
+      ...prev,
+      { id: Date.now().toString(), role: 'user', content: input.trim(), timestamp: new Date().toISOString() }
+    ]);
+
+    setInput('');
+  };
+
+  const copyToClipboard = (text: string) => navigator.clipboard.writeText(text).catch(console.error);
+
+  return (
+    <div className="flex flex-col h-full">
+      {/* Header */}
+      <div className="bg-[var(--bg-secondary)] border-b border-[var(--border-color)] p-4 flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          <Bot size={20} className="text-white" />
+          <h2 className="font-semibold">AI Assistant</h2>
+          <span className={`text-sm ${isConnected ? 'text-green-500' : 'text-yellow-500'}`}>
+            {isConnected ? 'Connected' : 'Connecting...'}
+          </span>
+        </div>
+        <Download size={16} />
+      </div>
+
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {messages.map((m) => (
+          <div key={m.id} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+            <div className={`max-w-[80%] ${m.role === 'user' ? 'order-2' : 'order-1'}`}>
+              <div
+                className={`rounded-lg p-4 prose prose-invert max-w-none ${
+                  m.role === 'user'
+                    ? 'bg-[var(--accent-primary)] text-white'
+                    : 'bg-[var(--bg-tertiary)] text-[var(--text-primary)]'
+                }`}
+              >
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
+
+                {m.thinkingProcess && (
+                  <div className="mt-3 border-t border-[var(--border-color)] pt-2">
+                    <button
+                      onClick={() => setShowThinking(showThinking === m.id ? null : m.id)}
+                      className="text-[var(--accent-secondary)] text-sm"
+                    >
+                      <Brain size={14} className="inline mr-1" />
+                      View AI Thinking Process
+                    </button>
+                    {showThinking === m.id && (
+                      <pre className="mt-2 p-2 bg-[var(--bg-secondary)] text-xs rounded border border-[var(--border-color)] overflow-x-auto">
+                        {m.thinkingProcess}
+                      </pre>
+                    )}
+                  </div>
+                )}
+
+                {m.role === 'assistant' && (
+                  <button
+                    onClick={() => copyToClipboard(m.content)}
+                    className="mt-2 text-xs text-[var(--text-muted)] flex items-center gap-1"
+                  >
+                    <Copy size={12} /> Copy
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+        {isTyping && <p className="text-sm text-gray-400">AI is thinking…</p>}
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* Input */}
+      <div className="p-4 bg-[var(--bg-secondary)] border-t border-[var(--border-color)]">
+        <div className="flex space-x-3">
+          <input
+            className="flex-1 p-3 rounded-lg border border-[var(--border-color)] bg-[var(--bg-primary)] text-white"
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+            placeholder="Type your message..."
+          />
+          <button
+            onClick={sendMessage}
+            disabled={!input.trim() || !isConnected}
+            className="px-6 py-3 gradient-bg text-white rounded-lg disabled:opacity-50 flex items-center justify-center"
+          >
+            <Send size={16} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+================================================================================
+
+// Path: src/components/ConversationList.tsx
+// frontend/src/components/ConversationList.tsx
+import { useEffect, useState } from 'react';
+import { Pencil, Check, X } from 'lucide-react';
+
+interface Conversation {
+  id: number;
+  title?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface Props {
+  projectId: number | null;
+  activeConversationId: number | null;
+  onSelect: (conversationId: number) => void;
+}
+
+export default function ConversationList({ projectId, activeConversationId, onSelect }: Props) {
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editValue, setEditValue] = useState('');
+
+  useEffect(() => {
+    loadConversations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectId]);
+
+  const loadConversations = () => {
+    if (!projectId) {
+      setConversations([]);
+      return;
+    }
+    fetch(`http://localhost:8000/api/projects/${projectId}/conversations`)
+      .then(res => res.json())
+      .then(data => setConversations(data))
+      .catch(err => console.error('Error loading conversations:', err));
+  };
+
+  const startEditing = (conv: Conversation) => {
+    setEditingId(conv.id);
+    setEditValue(conv.title || '');
+  };
+
+  const cancelEditing = () => {
+    setEditingId(null);
+    setEditValue('');
+  };
+
+  const saveTitle = async (convId: number) => {
+    if (!editValue.trim()) {
+      cancelEditing();
+      return;
+    }
+    try {
+      const res = await fetch(`http://localhost:8000/api/conversations/${convId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: editValue.trim(), project_id: projectId })
+      });
+      if (!res.ok) throw new Error('Failed to rename conversation');
+      const updated = await res.json();
+      setConversations(prev =>
+        prev.map(c => (c.id === convId ? { ...c, title: updated.title } : c))
+      );
+    } catch (err) {
+      console.error('Rename error:', err);
+    }
+    cancelEditing();
+  };
+
+  return (
+    <div className="p-2">
+      <div className="text-xs uppercase text-gray-400 mb-2">Conversations</div>
+      {conversations.length === 0 && (
+        <div className="text-sm text-gray-500">No conversations yet.</div>
+      )}
+      <ul className="space-y-1">
+        {conversations.map((conv) => (
+          <li
+            key={conv.id}
+            className={`group p-2 rounded flex items-center justify-between ${
+              activeConversationId === conv.id
+                ? 'bg-[var(--accent-primary)] text-white'
+                : 'hover:bg-[var(--bg-tertiary)]'
+            }`}
+          >
+            {editingId === conv.id ? (
+              <div className="flex items-center gap-2 w-full">
+                <input
+                  value={editValue}
+                  onChange={(e) => setEditValue(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') saveTitle(conv.id);
+                    else if (e.key === 'Escape') cancelEditing();
+                  }}
+                  autoFocus
+                  className="flex-1 px-2 py-1 rounded text-black"
+                />
+                <button
+                  onClick={() => saveTitle(conv.id)}
+                  className="p-1 text-green-500 hover:text-green-600"
+                  title="Save"
+                >
+                  <Check size={14} />
+                </button>
+                <button
+                  onClick={cancelEditing}
+                  className="p-1 text-red-500 hover:text-red-600"
+                  title="Cancel"
+                >
+                  <X size={14} />
+                </button>
+              </div>
+            ) : (
+              <>
+                <span
+                  onClick={() => onSelect(conv.id)}
+                  className="flex-1 cursor-pointer truncate"
+                >
+                  {conv.title || `Conversation ${conv.id}`}
+                </span>
+                <button
+                  onClick={() => startEditing(conv)}
+                  className="opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-white transition"
+                  title="Rename Conversation"
+                >
+                  <Pencil size={14} />
+                </button>
+              </>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+================================================================================
+
+// Path: src/components/CreateProjectModal.tsx
+// src/components/CreateProjectModal.tsx
+import React, { useState, useEffect } from 'react';
+import { X, Loader, AlertTriangle, CheckCircle } from 'lucide-react';
+
+interface CreateProjectModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onProjectCreated: (project: any) => void;
+  onError?: (error: string) => void;
+}
+
+interface ProjectFormData {
+  name: string;
+  project_description: string;
+  project_type: string;
+  requirements?: string;
+}
+
+const PROJECT_TYPES = [
+  {
+    value: 'FULLSTACK',
+    label: 'Full Stack Application',
+    description: 'Web application with frontend, backend, and database'
+  },
+  {
+    value: 'BACKEND_API',
+    label: 'Backend API',
+    description: 'REST API service or microservice backend'
+  },
+  {
+    value: 'FRONTEND_SPA',
+    label: 'Frontend SPA',
+    description: 'Single page application with React, Vue, or Angular'
+  },
+  {
+    value: 'MOBILE_APP',
+    label: 'Mobile Application',
+    description: 'Mobile app for Android/iOS with React Native or Flutter'
+  },
+  {
+    value: 'MICROSERVICE',
+    label: 'Microservice',
+    description: 'Containerized microservice with Docker/Kubernetes'
+  },
+  {
+    value: 'DATA_PIPELINE',
+    label: 'Data Pipeline',
+    description: 'ETL data processing and transformation pipeline'
+  }
+];
+
+
+export default function CreateProjectModal({
+  isOpen,
+  onClose,
+  onProjectCreated,
+  onError
+}: CreateProjectModalProps) {
+  const [formData, setFormData] = useState<ProjectFormData>({
+    name: '',
+    project_description: '',
+    project_type: 'FULLSTACK',
+    requirements: ''
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>('');
+  const [success, setSuccess] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+
+  // Reset form when modal opens/closes
+  useEffect(() => {
+    if (isOpen) {
+      setFormData({
+        name: '',
+        project_description: '',
+        project_type: 'FULLSTACK',
+        requirements: ''
+      });
+      setError('');
+      setSuccess(false);
+      setValidationErrors({});
+    }
+  }, [isOpen]);
+
+  // Form validation
+  const validateForm = (): boolean => {
+    const errors: Record<string, string> = {};
+
+    if (!formData.name.trim()) {
+      errors.name = 'Project name is required';
+    } else if (formData.name.trim().length < 2) {
+      errors.name = 'Project name must be at least 2 characters';
+    } else if (formData.name.trim().length > 100) {
+      errors.name = 'Project name must be less than 100 characters';
+    } else if (!/^[a-zA-Z0-9\s\-_]+$/.test(formData.name.trim())) {
+      errors.name = 'Project name can only contain letters, numbers, spaces, hyphens, and underscores';
+    }
+
+    if (!formData.project_description.trim()) {
+      errors.project_description = 'Project description is required';
+    } else if (formData.project_description.trim().length < 10) {
+      errors.project_description = 'Description must be at least 10 characters';
+    } else if (formData.project_description.trim().length > 1000) {
+      errors.project_description = 'Description must be less than 1000 characters';
+    }
+
+    if (!formData.project_type) {
+      errors.project_type = 'Project type is required';
+    }
+
+    if (formData.requirements && formData.requirements.length > 2000) {
+      errors.requirements = 'Requirements must be less than 2000 characters';
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleInputChange = (field: keyof ProjectFormData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+
+    // Clear validation error for this field
+    if (validationErrors[field]) {
+      setValidationErrors(prev => ({ ...prev, [field]: '' }));
+    }
+
+    // Clear general error
+    if (error) setError('');
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      setError('Please fix the validation errors before submitting');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError('');
+
+      const payload = {
+        name: formData.name.trim(),
+        project_description: formData.project_description.trim(),
+        project_type: formData.project_type,
+        ...(formData.requirements?.trim() && {
+          requirements: formData.requirements.trim()
+        })
+      };
+
+      const response = await fetch('http://localhost:8000/api/projects', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(60000) // 10 second timeout
+      });
+
+      if (!response.ok) {
+        let errorMessage = 'Failed to create project';
+
+        try {
+          const errorData = await response.json();
+          if (errorData.detail) {
+            errorMessage = typeof errorData.detail === 'string'
+              ? errorData.detail
+              : 'Validation error occurred';
+          }
+        } catch {
+          // If response is not JSON, use status-based message
+          errorMessage = response.status === 409
+            ? 'A project with this name already exists'
+            : response.status === 422
+            ? 'Invalid project data provided'
+            : response.status >= 500
+            ? 'Server error occurred. Please try again later.'
+            : 'Failed to create project';
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      const newProject = await response.json();
+
+      if (!newProject || !newProject.id) {
+        throw new Error('Invalid response from server');
+      }
+
+      setSuccess(true);
+
+      // Show success state briefly before closing
+      setTimeout(() => {
+        onProjectCreated(newProject);
+        onClose();
+      }, 1000);
+
+    } catch (err) {
+      let errorMessage = 'An unexpected error occurred';
+
+      if (err instanceof Error) {
+        if (err.name === 'AbortError') {
+          errorMessage = 'Request timed out. Please try again.';
+        } else if (err.message === 'Failed to fetch') {
+          errorMessage = 'Unable to connect to server. Please check your connection.';
+        } else {
+          errorMessage = err.message;
+        }
+      }
+
+      setError(errorMessage);
+      onError?.(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleClose = () => {
+    if (loading) return; // Prevent closing while loading
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-[var(--bg-secondary)] rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b border-[var(--border-color)]">
+          <h3 className="text-lg font-semibold text-[var(--text-primary)]">
+            Create New Project
+          </h3>
+          <button
+            onClick={handleClose}
+            disabled={loading}
+            className="text-[var(--text-muted)] hover:text-white disabled:opacity-50 transition-colors"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          {/* Project Name */}
+          <div>
+            <label className="block text-sm font-medium mb-2 text-[var(--text-primary)]">
+              Project Name <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) => handleInputChange('name', e.target.value)}
+              disabled={loading}
+              className={`w-full p-3 bg-[var(--bg-primary)] border rounded-lg text-white disabled:opacity-50 transition-colors ${
+                validationErrors.name
+                  ? 'border-red-500 focus:border-red-500'
+                  : 'border-[var(--border-color)] focus:border-[var(--accent-primary)]'
+              }`}
+              placeholder="Enter project name (e.g., My Blog App)"
+              maxLength={100}
+            />
+            {validationErrors.name && (
+              <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                <AlertTriangle size={14} />
+                {validationErrors.name}
+              </p>
+            )}
+            <p className="text-xs text-[var(--text-muted)] mt-1">
+              {formData.name.length}/100 characters
+            </p>
+          </div>
+
+          {/* Project Description */}
+          <div>
+            <label className="block text-sm font-medium mb-2 text-[var(--text-primary)]">
+              Description <span className="text-red-500">*</span>
+            </label>
+            <textarea
+              value={formData.project_description}
+              onChange={(e) => handleInputChange('project_description', e.target.value)}
+              disabled={loading}
+              className={`w-full p-3 bg-[var(--bg-primary)] border rounded-lg text-white h-24 resize-none disabled:opacity-50 transition-colors ${
+                validationErrors.project_description
+                  ? 'border-red-500 focus:border-red-500'
+                  : 'border-[var(--border-color)] focus:border-[var(--accent-primary)]'
+              }`}
+              placeholder="Describe what your project will do..."
+              maxLength={1000}
+            />
+            {validationErrors.project_description && (
+              <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                <AlertTriangle size={14} />
+                {validationErrors.project_description}
+              </p>
+            )}
+            <p className="text-xs text-[var(--text-muted)] mt-1">
+              {formData.project_description.length}/1000 characters
+            </p>
+          </div>
+
+          {/* Project Type */}
+          <div>
+            <label className="block text-sm font-medium mb-2 text-[var(--text-primary)]">
+              Project Type <span className="text-red-500">*</span>
+            </label>
+            <select
+              value={formData.project_type}
+              onChange={(e) => handleInputChange('project_type', e.target.value)}
+              disabled={loading}
+              className={`w-full p-3 bg-[var(--bg-primary)] border rounded-lg text-white disabled:opacity-50 transition-colors ${
+                validationErrors.project_type
+                  ? 'border-red-500 focus:border-red-500'
+                  : 'border-[var(--border-color)] focus:border-[var(--accent-primary)]'
+              }`}
+            >
+              {PROJECT_TYPES.map(type => (
+                <option key={type.value} value={type.value}>
+                  {type.label}
+                </option>
+              ))}
+            </select>
+            {validationErrors.project_type && (
+              <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                <AlertTriangle size={14} />
+                {validationErrors.project_type}
+              </p>
+            )}
+          </div>
+
+          {/* Requirements (Optional) */}
+          <div>
+            <label className="block text-sm font-medium mb-2 text-[var(--text-primary)]">
+              Requirements <span className="text-[var(--text-muted)]">(Optional)</span>
+            </label>
+            <textarea
+              value={formData.requirements || ''}
+              onChange={(e) => handleInputChange('requirements', e.target.value)}
+              disabled={loading}
+              className={`w-full p-3 bg-[var(--bg-primary)] border rounded-lg text-white h-20 resize-none disabled:opacity-50 transition-colors ${
+                validationErrors.requirements
+                  ? 'border-red-500 focus:border-red-500'
+                  : 'border-[var(--border-color)] focus:border-[var(--accent-primary)]'
+              }`}
+              placeholder="Any specific requirements or features..."
+              maxLength={2000}
+            />
+            {validationErrors.requirements && (
+              <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                <AlertTriangle size={14} />
+                {validationErrors.requirements}
+              </p>
+            )}
+            <p className="text-xs text-[var(--text-muted)] mt-1">
+              {(formData.requirements || '').length}/2000 characters
+            </p>
+          </div>
+
+          {/* Error Display */}
+          {error && (
+            <div className="p-3 bg-red-500 bg-opacity-10 border border-red-500 rounded-lg">
+              <p className="text-red-500 text-sm flex items-center gap-2">
+                <AlertTriangle size={16} />
+                {error}
+              </p>
+            </div>
+          )}
+
+          {/* Success Display */}
+          {success && (
+            <div className="p-3 bg-green-500 bg-opacity-10 border border-green-500 rounded-lg">
+              <p className="text-green-500 text-sm flex items-center gap-2">
+                <CheckCircle size={16} />
+                Project created successfully!
+              </p>
+            </div>
+          )}
+
+          {/* Actions */}
+          <div className="flex justify-end gap-3 pt-4 border-t border-[var(--border-color)]">
+            <button
+              type="button"
+              onClick={handleClose}
+              disabled={loading}
+              className="px-4 py-2 text-[var(--text-secondary)] hover:text-white disabled:opacity-50 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading || success || !formData.name.trim() || !formData.project_description.trim()}
+              className="px-6 py-2 bg-[var(--accent-primary)] text-white rounded-lg hover:bg-[var(--accent-secondary)] disabled:opacity-50 transition-colors flex items-center gap-2"
+            >
+              {loading ? (
+                <>
+                  <Loader size={16} className="animate-spin" />
+                  Creating...
+                </>
+              ) : success ? (
+                <>
+                  <CheckCircle size={16} />
+                  Created!
+                </>
+              ) : (
+                'Create Project'
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+================================================================================
+
+// Path: src/components/Footer.tsx
+// src/components/Footer.tsx
+import { Activity, Wifi, Zap } from 'lucide-react';
+
+export default function Footer() {
+  return (
+    <footer className="bg-[var(--bg-secondary)] border-t border-[var(--border-color)] px-4 py-2">
+      <div className="flex items-center justify-between text-sm">
+        <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-2 text-[var(--text-secondary)]">
+            <Activity size={14} className="text-[var(--success-color)]" />
+            <span>GLM-4.5 Active</span>
+          </div>
+
+          <div className="flex items-center space-x-2 text-[var(--text-secondary)]">
+            <Wifi size={14} className="text-[var(--success-color)]" />
+            <span>WebSocket Connected</span>
+          </div>
+
+          <div className="flex items-center space-x-2 text-[var(--text-secondary)]">
+            <Zap size={14} className="text-[var(--success-color)]" />
+            <span>2,847 Tokens Today</span>
+          </div>
+        </div>
+
+        <div className="text-[var(--text-muted)]">
+          Thinking Mode: <span className="text-[var(--success-color)]">Enabled</span>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+================================================================================
+
+// Path: src/components/Header.tsx
+// src/components/Header.tsx
+import { Menu, Moon, Sun, Wifi, Activity } from 'lucide-react';
+import { useState } from 'react';
+
+interface HeaderProps {
+  onToggleSidebar: () => void;
+  sidebarCollapsed: boolean;
+}
+
+export default function Header({ onToggleSidebar, sidebarCollapsed }: HeaderProps) {
+  const [darkMode, setDarkMode] = useState(true);
+
+  return (
+    <header className="bg-[var(--bg-secondary)] border-b border-[var(--border-color)] px-4 py-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <button
+            onClick={onToggleSidebar}
+            className="p-2 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-secondary)]
+                     hover:text-[var(--text-primary)] hover:bg-[var(--border-color)]
+                     transition-all duration-200"
+          >
+            <Menu size={18} />
+          </button>
+
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center">
+              <span className="text-white font-bold text-sm">🤖</span>
+            </div>
+            <div>
+              <h1 className="text-lg font-semibold text-[var(--text-primary)]">
+                Samriddh AI
+              </h1>
+              <p className="text-xs text-[var(--text-muted)]">
+                Personal Coding Companion
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 text-sm text-[var(--text-secondary)]">
+            <div className="flex items-center space-x-1">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <Wifi size={14} />
+              <span>Connected</span>
+            </div>
+          </div>
+
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className="p-2 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-secondary)]
+                     hover:text-[var(--text-primary)] hover:bg-[var(--border-color)]
+                     transition-all duration-200"
+          >
+            {darkMode ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+================================================================================
+
+// Path: src/components/OrchestrationPanel.tsx
+// src/components/OrchestrationPanel.tsx - Enhanced Version
+
+import React, { useState, useEffect } from 'react';
+import {
+  Play, Square, Clock, CheckCircle, XCircle, AlertCircle, Loader, Plus,
+  Edit3, Save, X, ChevronDown, ChevronRight, Eye, Trash2
+} from 'lucide-react';
+import { orchestrationApi, OrchestrationTask, OrchestrationStatus } from '../services/orchestrationApi';
+import { useOrchestrationWebSocket } from '../hooks/useOrchestrationWebSocket';
+
+interface TaskPlan {
+  id: string;
+  name: string;
+  type: string;
+  description: string;
+  depends_on: string[];
+  status: string;
+  agent_assignment?: string;
+  estimated_duration?: number;
+  priority?: 'low' | 'medium' | 'high';
+}
+
+interface Props {
+  projectId: number | null;
+}
+
+const AVAILABLE_AGENTS = [
+  'backend_engineer',
+  'frontend_developer',
+  'database_architect',
+  'qa_tester',
+  'devops_agent',
+  'documentation_agent'
+];
+
+export default function OrchestrationPanel({ projectId }: Props) {
+  const [orchestrations, setOrchestrations] = useState<OrchestrationTask[]>([]);
+  const [selectedOrchestration, setSelectedOrchestration] = useState<number | null>(null);
+  const [orchestrationStatus, setOrchestrationStatus] = useState<OrchestrationStatus | null>(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showPlanEditor, setShowPlanEditor] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [logs, setLogs] = useState<{[key: number]: any[]}>({});
+
+  const { isConnected, progress, history } = useOrchestrationWebSocket(selectedOrchestration);
+
+  // Collect logs from WebSocket history
+  useEffect(() => {
+    if (progress && selectedOrchestration) {
+      setLogs(prev => ({
+        ...prev,
+        [selectedOrchestration]: [...(prev[selectedOrchestration] || []), progress]
+      }));
+    }
+  }, [progress, selectedOrchestration]);
+
+  // Load orchestrations when project changes
+  useEffect(() => {
+    if (projectId) {
+      loadOrchestrations();
+    } else {
+      setOrchestrations([]);
+      setSelectedOrchestration(null);
+    }
+  }, [projectId]);
+
+  // Update status when progress changes
+  useEffect(() => {
+    if (progress && selectedOrchestration) {
+      loadOrchestrationStatus(selectedOrchestration);
+    }
+  }, [progress, selectedOrchestration]);
+
+  const loadOrchestrations = async () => {
+    if (!projectId) return;
+
+    try {
+      setLoading(true);
+      const data = await orchestrationApi.getProjectOrchestrations(projectId);
+      setOrchestrations(data);
+    } catch (error) {
+      console.error('Failed to load orchestrations:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadOrchestrationStatus = async (orchestrationId: number) => {
+    try {
+      const status = await orchestrationApi.getStatus(orchestrationId);
+      setOrchestrationStatus(status);
+    } catch (error) {
+      console.error('Failed to load orchestration status:', error);
+    }
+  };
+
+  const handleSelectOrchestration = (orchestrationId: number) => {
+    setSelectedOrchestration(orchestrationId);
+    loadOrchestrationStatus(orchestrationId);
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return <Clock size={16} className="text-yellow-500" />;
+      case 'running':
+        return <Loader size={16} className="text-blue-500 animate-spin" />;
+      case 'completed':
+        return <CheckCircle size={16} className="text-green-500" />;
+      case 'failed':
+        return <XCircle size={16} className="text-red-500" />;
+      default:
+        return <AlertCircle size={16} className="text-gray-500" />;
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return 'text-yellow-500';
+      case 'running':
+        return 'text-blue-500';
+      case 'completed':
+        return 'text-green-500';
+      case 'failed':
+        return 'text-red-500';
+      default:
+        return 'text-gray-500';
+    }
+  };
+
+  const formatTimestamp = (timestamp?: string) => {
+    if (!timestamp) return 'N/A';
+    return new Date(timestamp).toLocaleTimeString();
+  };
+
+  return (
+    <div className="h-full flex flex-col bg-[var(--bg-secondary)] border-l border-[var(--border-color)]">
+      {/* Header */}
+      <div className="flex-shrink-0 p-4 border-b border-[var(--border-color)]">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-semibold text-[var(--text-primary)]">Orchestrations</h3>
+          <div className="flex gap-2">
+            {projectId && (
+              <>
+                <button
+                  onClick={() => setShowPlanEditor(true)}
+                  className="p-1 text-[var(--accent-secondary)] hover:bg-[var(--bg-tertiary)] rounded"
+                  title="Plan Builder"
+                >
+                  <Edit3 size={16} />
+                </button>
+                <button
+                  onClick={() => setShowCreateModal(true)}
+                  className="p-1 text-[var(--accent-primary)] hover:bg-[var(--bg-tertiary)] rounded"
+                  title="Create New Orchestration"
+                >
+                  <Plus size={16} />
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+
+        {isConnected && selectedOrchestration && (
+          <div className="text-xs text-green-500 flex items-center gap-1">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            Real-time updates
+          </div>
+        )}
+      </div>
+
+      {/* Orchestration List */}
+      <div className="flex-1 overflow-y-auto">
+        {loading ? (
+          <div className="p-4 text-center text-[var(--text-muted)]">
+            <Loader size={20} className="animate-spin mx-auto mb-2" />
+            Loading orchestrations...
+          </div>
+        ) : orchestrations.length === 0 ? (
+          <div className="p-4 text-center text-[var(--text-muted)]">
+            {projectId ? 'No orchestrations yet' : 'Select a project to view orchestrations'}
+          </div>
+        ) : (
+          <div className="space-y-2 p-2">
+            {orchestrations.map((orch) => (
+              <div
+                key={orch.id}
+                className={`rounded-lg transition-colors ${
+                  selectedOrchestration === orch.id
+                    ? 'bg-[var(--accent-primary)]'
+                    : 'bg-[var(--bg-tertiary)]'
+                }`}
+              >
+                <div
+                  onClick={() => handleSelectOrchestration(orch.id)}
+                  className="p-3 cursor-pointer"
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm font-medium truncate text-white">{orch.name}</span>
+                    {getStatusIcon(orch.status)}
+                  </div>
+                  <div className="text-xs opacity-75 truncate text-white">{orch.description}</div>
+                  <div className={`text-xs mt-1 capitalize ${
+                    selectedOrchestration === orch.id ? 'text-white' : getStatusColor(orch.status)
+                  }`}>
+                    {orch.status}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Selected Orchestration Details */}
+      {orchestrationStatus && (
+        <div className="flex-shrink-0 border-t border-[var(--border-color)] max-h-96 overflow-y-auto">
+          <OrchestrationDetailsPanel
+            status={orchestrationStatus}
+            logs={logs[selectedOrchestration] || []}
+          />
+        </div>
+      )}
+
+      {/* Modals */}
+      {showCreateModal && (
+        <CreateOrchestrationModal
+          projectId={projectId!}
+          onClose={() => setShowCreateModal(false)}
+          onCreated={() => {
+            loadOrchestrations();
+            setShowCreateModal(false);
+          }}
+        />
+      )}
+
+      {showPlanEditor && (
+        <PlanEditorModal
+          projectId={projectId!}
+          onClose={() => setShowPlanEditor(false)}
+          onSaved={() => {
+            loadOrchestrations();
+            setShowPlanEditor(false);
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+// Enhanced Orchestration Details Panel
+function OrchestrationDetailsPanel({
+  status,
+  logs
+}: {
+  status: OrchestrationStatus;
+  logs: any[];
+}) {
+  const [expandedTasks, setExpandedTasks] = useState<Set<number>>(new Set());
+  const [showLogs, setShowLogs] = useState(false);
+
+  const toggleTaskExpansion = (taskId: number) => {
+    const newExpanded = new Set(expandedTasks);
+    if (newExpanded.has(taskId)) {
+      newExpanded.delete(taskId);
+    } else {
+      newExpanded.add(taskId);
+    }
+    setExpandedTasks(newExpanded);
+  };
+
+  return (
+    <div className="p-4 space-y-4">
+      {/* Progress Section */}
+      <div>
+        <div className="flex justify-between text-xs mb-2">
+          <span>Overall Progress</span>
+          <span>{Math.round(status.progress_percentage)}%</span>
+        </div>
+        <div className="w-full h-2 bg-[var(--bg-primary)] rounded-full">
+          <div
+            className="h-2 bg-gradient-to-r from-[var(--accent-primary)] to-[var(--accent-secondary)] rounded-full transition-all duration-300"
+            style={{ width: `${status.progress_percentage}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Task Stats */}
+      <div className="grid grid-cols-3 gap-2 text-xs">
+        <div className="text-center p-2 bg-[var(--bg-tertiary)] rounded">
+          <div className="text-green-500 font-semibold">{status.completed_tasks}</div>
+          <div className="text-[var(--text-muted)]">Done</div>
+        </div>
+        <div className="text-center p-2 bg-[var(--bg-tertiary)] rounded">
+          <div className="text-blue-500 font-semibold">{status.running_tasks}</div>
+          <div className="text-[var(--text-muted)]">Active</div>
+        </div>
+        <div className="text-center p-2 bg-[var(--bg-tertiary)] rounded">
+          <div className="text-red-500 font-semibold">{status.failed_tasks}</div>
+          <div className="text-[var(--text-muted)]">Failed</div>
+        </div>
+      </div>
+
+      {/* Agent Tasks */}
+      <div>
+        <div className="flex items-center justify-between mb-2">
+          <div className="text-xs text-[var(--text-muted)]">Agent Tasks</div>
+          <button
+            onClick={() => setShowLogs(!showLogs)}
+            className="text-xs text-[var(--accent-primary)] hover:text-[var(--accent-secondary)]"
+          >
+            <Eye size={12} className="inline mr-1" />
+            {showLogs ? 'Hide' : 'Show'} Logs
+          </button>
+        </div>
+
+        <div className="space-y-2 max-h-48 overflow-y-auto">
+          {status.agent_tasks.map((task) => (
+            <div key={task.id} className="bg-[var(--bg-tertiary)] rounded-lg">
+              <div
+                className="flex items-center justify-between p-3 cursor-pointer"
+                onClick={() => toggleTaskExpansion(task.id)}
+              >
+                <div className="flex items-center gap-2">
+                  {expandedTasks.has(task.id) ?
+                    <ChevronDown size={14} /> :
+                    <ChevronRight size={14} />
+                  }
+                  <span className="text-sm capitalize">
+                    {task.agent_type.replace('_', ' ')}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  {task.status === 'running' && <Loader size={12} className="animate-spin text-blue-500" />}
+                  {task.status === 'completed' && <CheckCircle size={12} className="text-green-500" />}
+                  {task.status === 'failed' && <XCircle size={12} className="text-red-500" />}
+                  {task.status === 'pending' && <Clock size={12} className="text-yellow-500" />}
+                </div>
+              </div>
+
+              {expandedTasks.has(task.id) && (
+                <div className="px-3 pb-3 text-xs space-y-1 border-t border-[var(--border-color)] pt-2">
+                  <div>Status: <span className="font-medium">{task.status}</span></div>
+                  {task.started_at && (
+                    <div>Started: {new Date(task.started_at).toLocaleString()}</div>
+                  )}
+                  {task.finished_at && (
+                    <div>Finished: {new Date(task.finished_at).toLocaleString()}</div>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Live Logs */}
+      {showLogs && (
+        <div className="bg-[var(--bg-primary)] rounded-lg p-3">
+          <div className="text-xs font-medium mb-2">Live Logs</div>
+          <div className="max-h-32 overflow-y-auto text-xs font-mono space-y-1">
+            {logs.slice(-10).map((log, index) => (
+              <div key={index} className="flex gap-2">
+                <span className="text-[var(--text-muted)]">
+                  {log.timestamp ? new Date(log.timestamp).toLocaleTimeString() : 'N/A'}
+                </span>
+                <span className="text-[var(--text-primary)]">
+                  {log.message || `${log.type}: ${log.agent_type || 'system'}`}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Enhanced Plan Editor Modal
+function PlanEditorModal({
+  projectId,
+  onClose,
+  onSaved
+}: {
+  projectId: number;
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const [description, setDescription] = useState('');
+  const [taskPlan, setTaskPlan] = useState<TaskPlan[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [editingTask, setEditingTask] = useState<string | null>(null);
+
+  const handleGeneratePlan = async () => {
+    if (!description.trim()) return;
+
+    try {
+      setLoading(true);
+      const plan = await orchestrationApi.getPlan(description.trim());
+      const enhancedPlan: TaskPlan[] = plan.tasks.map(task => ({
+        ...task,
+        agent_assignment: AVAILABLE_AGENTS.find(agent => agent.includes(task.type)) || 'backend_engineer',
+        estimated_duration: Math.floor(Math.random() * 60) + 30, // Random 30-90 minutes
+        priority: 'medium' as const
+      }));
+      setTaskPlan(enhancedPlan);
+    } catch (error) {
+      console.error('Failed to generate plan:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdateTask = (taskId: string, updates: Partial<TaskPlan>) => {
+    setTaskPlan(prev => prev.map(task =>
+      task.id === taskId ? { ...task, ...updates } : task
+    ));
+  };
+
+  const handleCreateAndStart = async () => {
+    if (!description.trim()) return;
+
+    try {
+      setLoading(true);
+      await orchestrationApi.createAndStart({
+        project_id: projectId,
+        description: description.trim()
+      });
+      onSaved();
+    } catch (error) {
+      console.error('Failed to create orchestration:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-[var(--bg-secondary)] rounded-lg w-full max-w-4xl max-h-[80vh] overflow-hidden flex flex-col">
+        {/* Header */}
+        <div className="p-6 border-b border-[var(--border-color)]">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold">Advanced Orchestration Planner</h3>
+            <button onClick={onClose} className="text-[var(--text-muted)] hover:text-white">
+              <X size={20} />
+            </button>
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          {/* Description Input */}
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Project Description:
+            </label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Describe your project in detail..."
+              className="w-full h-20 p-3 bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-lg text-white"
+            />
+            <div className="flex gap-2 mt-2">
+              <button
+                onClick={handleGeneratePlan}
+                disabled={!description.trim() || loading}
+                className="px-4 py-2 bg-[var(--accent-primary)] text-white rounded-lg hover:bg-[var(--accent-secondary)] disabled:opacity-50"
+              >
+                {loading ? <Loader size={16} className="animate-spin" /> : 'Generate Plan'}
+              </button>
+            </div>
+          </div>
+
+          {/* Editable Task Plan */}
+          {taskPlan.length > 0 && (
+            <div>
+              <h4 className="font-medium mb-4">Task Plan (Editable)</h4>
+              <div className="space-y-3">
+                {taskPlan.map((task) => (
+                  <div key={task.id} className="bg-[var(--bg-primary)] p-4 rounded-lg">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs text-[var(--text-muted)] mb-1">Task Name</label>
+                        <input
+                          type="text"
+                          value={task.name}
+                          onChange={(e) => handleUpdateTask(task.id, { name: e.target.value })}
+                          className="w-full p-2 bg-[var(--bg-tertiary)] border border-[var(--border-color)] rounded text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-[var(--text-muted)] mb-1">Agent Assignment</label>
+                        <select
+                          value={task.agent_assignment}
+                          onChange={(e) => handleUpdateTask(task.id, { agent_assignment: e.target.value })}
+                          className="w-full p-2 bg-[var(--bg-tertiary)] border border-[var(--border-color)] rounded text-sm"
+                        >
+                          {AVAILABLE_AGENTS.map(agent => (
+                            <option key={agent} value={agent}>
+                              {agent.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="col-span-2">
+                        <label className="block text-xs text-[var(--text-muted)] mb-1">Description</label>
+                        <textarea
+                          value={task.description}
+                          onChange={(e) => handleUpdateTask(task.id, { description: e.target.value })}
+                          className="w-full p-2 bg-[var(--bg-tertiary)] border border-[var(--border-color)] rounded text-sm"
+                          rows={2}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-[var(--text-muted)] mb-1">Priority</label>
+                        <select
+                          value={task.priority}
+                          onChange={(e) => handleUpdateTask(task.id, { priority: e.target.value as 'low'|'medium'|'high' })}
+                          className="w-full p-2 bg-[var(--bg-tertiary)] border border-[var(--border-color)] rounded text-sm"
+                        >
+                          <option value="low">Low</option>
+                          <option value="medium">Medium</option>
+                          <option value="high">High</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs text-[var(--text-muted)] mb-1">Est. Duration (min)</label>
+                        <input
+                          type="number"
+                          value={task.estimated_duration}
+                          onChange={(e) => handleUpdateTask(task.id, { estimated_duration: parseInt(e.target.value) })}
+                          className="w-full p-2 bg-[var(--bg-tertiary)] border border-[var(--border-color)] rounded text-sm"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="p-6 border-t border-[var(--border-color)] flex justify-end gap-2">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-[var(--text-secondary)] hover:text-white"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleCreateAndStart}
+            disabled={!description.trim() || loading}
+            className="px-4 py-2 bg-[var(--accent-primary)] text-white rounded-lg hover:bg-[var(--accent-secondary)] disabled:opacity-50"
+          >
+            {loading ? <Loader size={16} className="animate-spin" /> : 'Create & Start'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Simple Create Modal (keeping the existing one)
+function CreateOrchestrationModal({
+  projectId,
+  onClose,
+  onCreated
+}: {
+  projectId: number;
+  onClose: () => void;
+  onCreated: () => void;
+}) {
+  const [description, setDescription] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [preview, setPreview] = useState<any>(null);
+
+  const handlePreview = async () => {
+    if (!description.trim()) return;
+
+    try {
+      setLoading(true);
+      const plan = await orchestrationApi.getPlan(description.trim());
+      setPreview(plan);
+    } catch (error) {
+      console.error('Failed to get plan preview:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreate = async () => {
+    if (!description.trim()) return;
+
+    try {
+      setLoading(true);
+      await orchestrationApi.createAndStart({
+        project_id: projectId,
+        description: description.trim()
+      });
+      onCreated();
+    } catch (error) {
+      console.error('Failed to create orchestration:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-[var(--bg-secondary)] rounded-lg p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
+        <h3 className="text-lg font-semibold mb-4">Quick Orchestration</h3>
+
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Describe what you want to build:
+            </label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="e.g., Build a blog platform with React frontend, FastAPI backend, and PostgreSQL database"
+              className="w-full h-24 p-3 bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-lg text-white"
+            />
+          </div>
+
+          <div className="flex gap-2">
+            <button
+              onClick={handlePreview}
+              disabled={!description.trim() || loading}
+              className="px-4 py-2 bg-[var(--bg-tertiary)] text-white rounded-lg hover:bg-[var(--border-color)] disabled:opacity-50"
+            >
+              {loading ? <Loader size={16} className="animate-spin" /> : 'Preview Plan'}
+            </button>
+          </div>
+
+          {/* Preview */}
+          {preview && (
+            <div className="bg-[var(--bg-primary)] p-4 rounded-lg">
+              <h4 className="font-medium mb-2">Planned Tasks:</h4>
+              <div className="space-y-2">
+                {preview.tasks.map((task: any, index: number) => (
+                  <div key={index} className="p-2 bg-[var(--bg-tertiary)] rounded">
+                    <div className="font-medium text-sm">{task.name}</div>
+                    <div className="text-xs text-[var(--text-muted)]">{task.description}</div>
+                    <div className="text-xs text-[var(--accent-primary)] mt-1">Type: {task.type}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="flex justify-end gap-2 pt-4 border-t border-[var(--border-color)]">
+            <button
+              onClick={onClose}
+              className="px-4 py-2 text-[var(--text-secondary)] hover:text-white"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleCreate}
+              disabled={!description.trim() || loading}
+              className="px-4 py-2 bg-[var(--accent-primary)] text-white rounded-lg hover:bg-[var(--accent-secondary)] disabled:opacity-50"
+            >
+              {loading ? <Loader size={16} className="animate-spin" /> : 'Create & Start'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+================================================================================
+
+// Path: src/components/ProjectSelector.tsx
+// frontend/src/components/ProjectSelector.tsx
+import { useEffect, useState } from 'react';
+
+interface Project {
+  id: number;
+  name: string;
+  description?: string;
+}
+
+interface Props {
+  activeProjectId: number | null;
+  onSelect: (projectId: number) => void;
+}
+
+export default function ProjectSelector({ activeProjectId, onSelect }: Props) {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('http://localhost:8000/api/projects')
+      .then(res => res.json())
+      .then(data => setProjects(data))
+      .catch(err => console.error('Error loading projects:', err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return <div className="p-2 text-sm text-gray-400">Loading projects...</div>;
+  }
+
+  return (
+    <div className="p-2">
+      <label className="text-xs uppercase text-gray-400">Project</label>
+      <select
+        value={activeProjectId ?? ''}
+        onChange={(e) => onSelect(Number(e.target.value))}
+        className="mt-1 w-full p-2 rounded border border-[var(--border-color)] bg-[var(--bg-secondary)] text-white"
+      >
+        <option value="">-- Select Project --</option>
+        {projects.map((project) => (
+          <option key={project.id} value={project.id}>
+            {project.name}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
+================================================================================
+
+// Path: src/components/RightPanel.tsx
+// src/components/RightPanel.tsx
+
+import {
+  FileText,
+  Clock,
+  AlertCircle,
+  Loader,
+  Settings,
+  Activity
+} from 'lucide-react';
+import { useEffect, useState } from 'react';
+import OrchestrationPanel from './OrchestrationPanel';
+
+interface ProjectFile {
+  id: number;
+  filename: string;
+  file_path: string;
+  file_type?: string;
+  file_size?: number;
+  uploaded_at: string;
+}
+
+interface Props {
+  projectId: number | null;
+  onUseDirectoryContext?: (files: ProjectFile[]) => void;
+  activeTab?: 'files' | 'orchestrations' | 'agents';
+  onTabChange?: (tab: 'files' | 'orchestrations' | 'agents') => void;
+}
+
+export default function RightPanel({
+  projectId,
+  onUseDirectoryContext,
+  activeTab = 'orchestrations',
+  onTabChange
+}: Props) {
+  const [files, setFiles] = useState<ProjectFile[]>([]);
+  const [uploading, setUploading] = useState(false);
+
+  // Fetch files when project changes
+  useEffect(() => {
+    if (projectId) {
+      fetch(`http://localhost:8000/api/files/project/${projectId}`)
+        .then(res => {
+          if (!res.ok) return [];
+          return res.json();
+        })
+        .then(data => setFiles(Array.isArray(data) ? data : []))
+        .catch(() => setFiles([]));
+    } else {
+      setFiles([]);
+    }
+  }, [projectId]);
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!projectId || !event.target.files) return;
+
+    const formData = new FormData();
+    Array.from(event.target.files).forEach(file => {
+      formData.append("files", file);
+    });
+    formData.append("project_id", String(projectId));
+
+    try {
+      setUploading(true);
+      const res = await fetch(`http://localhost:8000/api/files/upload`, {
+        method: 'POST',
+        body: formData
+      });
+      if (!res.ok) throw new Error("Upload failed");
+      const uploaded = await res.json();
+      if (Array.isArray(uploaded)) {
+        setFiles(prev => [...uploaded, ...prev]);
+      } else {
+        const refreshedFiles = await fetch(`http://localhost:8000/api/files/project/${projectId}`).then(r => r.json());
+        setFiles(Array.isArray(refreshedFiles) ? refreshedFiles : []);
+      }
+    } catch (err) {
+      console.error('File upload error:', err);
+    } finally {
+      setUploading(false);
+      if (event.target) event.target.value = '';
+    }
+  };
+
+  const handleUseAll = () => {
+    if (onUseDirectoryContext && files.length > 0) {
+      onUseDirectoryContext(files);
+    }
+  };
+
+  const handleTabClick = (tab: 'files' | 'orchestrations' | 'agents') => {
+    if (onTabChange) {
+      onTabChange(tab);
+    }
+  };
+
+  return (
+    <div className="w-80 h-full flex flex-col bg-[var(--bg-secondary)] border-l border-[var(--border-color)]">
+      {/* Tab Header */}
+      <div className="flex-shrink-0 border-b border-[var(--border-color)]">
+        <div className="flex">
+          <button
+            onClick={() => handleTabClick('orchestrations')}
+            className={`flex-1 px-3 py-2 text-xs font-medium transition-colors ${
+              activeTab === 'orchestrations'
+                ? 'bg-[var(--accent-primary)] text-white'
+                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+            }`}
+          >
+            <Activity size={14} className="inline mr-1" />
+            Orchestrations
+          </button>
+          <button
+            onClick={() => handleTabClick('files')}
+            className={`flex-1 px-3 py-2 text-xs font-medium transition-colors ${
+              activeTab === 'files'
+                ? 'bg-[var(--accent-primary)] text-white'
+                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+            }`}
+          >
+            <FileText size={14} className="inline mr-1" />
+            Files
+          </button>
+          <button
+            onClick={() => handleTabClick('agents')}
+            className={`flex-1 px-3 py-2 text-xs font-medium transition-colors ${
+              activeTab === 'agents'
+                ? 'bg-[var(--accent-primary)] text-white'
+                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+            }`}
+          >
+            <Settings size={14} className="inline mr-1" />
+            System
+          </button>
+        </div>
+      </div>
+
+      {/* Tab Content */}
+      <div className="flex-1 flex flex-col min-h-0">
+        {activeTab === 'orchestrations' && (
+          <OrchestrationPanel projectId={projectId} />
+        )}
+
+        {activeTab === 'files' && (
+          <div className="flex-1 flex flex-col">
+            {/* Project Info */}
+            <div className="flex-shrink-0 p-4 border-b border-[var(--border-color)]">
+              <h3 className="text-sm font-semibold mb-3 text-[var(--text-primary)]">Project Files</h3>
+              {projectId ? (
+                <>
+                  <p className="text-xs text-[var(--text-muted)] mb-2">Project ID: {projectId}</p>
+                  <input
+                    type="file"
+                    multiple
+                    onChange={handleFileUpload}
+                    disabled={!projectId}
+                    className="text-xs text-[var(--text-primary)] w-full"
+                  />
+                  {uploading && <div className="text-xs text-[var(--text-secondary)] mt-1">Uploading...</div>}
+                </>
+              ) : (
+                <p className="text-xs text-[var(--text-muted)]">No project selected</p>
+              )}
+            </div>
+
+            {/* Files Section */}
+            <div className="flex-1 overflow-y-auto p-4">
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="text-sm font-semibold text-[var(--text-primary)]">File Explorer</h3>
+                {files.length > 0 && (
+                  <button
+                    onClick={handleUseAll}
+                    className="text-xs px-2 py-1 rounded bg-[var(--accent-primary)] text-white hover:opacity-90"
+                  >
+                    Use All Context
+                  </button>
+                )}
+              </div>
+
+              {(!files || files.length === 0) ? (
+                <p className="text-xs text-[var(--text-muted)]">No files uploaded</p>
+              ) : (
+                <div className="space-y-1">
+                  {files.map(file => (
+                    <div key={file.id} className="flex items-center space-x-2 p-2 rounded hover:bg-[var(--bg-tertiary)] cursor-pointer">
+                      <FileText size={14} className="text-[var(--text-secondary)]" />
+                      <span className="text-sm text-[var(--text-primary)] truncate">{file.filename}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'agents' && (
+          <div className="flex-1 p-4">
+            <h3 className="text-sm font-semibold mb-3 text-[var(--text-primary)]">System Status</h3>
+
+            {/* System Stats */}
+            <div className="space-y-4">
+              <div className="bg-[var(--bg-tertiary)] rounded p-3">
+                <h4 className="text-sm font-medium mb-2 text-[var(--text-primary)]">Token Usage</h4>
+                <div className="flex justify-between mb-2 text-xs">
+                  <span className="text-[var(--text-secondary)]">Today</span>
+                  <span className="text-[var(--text-primary)] font-semibold">2,847</span>
+                </div>
+                <div className="flex justify-between mb-3 text-xs">
+                  <span className="text-[var(--text-secondary)]">This Month</span>
+                  <span className="text-[var(--text-primary)] font-semibold">45,230</span>
+                </div>
+                <div className="w-full h-2 mb-2 rounded bg-[var(--bg-primary)]">
+                  <div className="h-2 rounded bg-gradient-to-r from-[var(--success-color)] to-[var(--warning-color)] transition-all duration-300"
+                    style={{ width: '34%' }} />
+                </div>
+                <p className="text-center text-[var(--text-muted)] text-xs">34% of monthly limit</p>
+              </div>
+
+              <div className="bg-[var(--bg-tertiary)] rounded p-3">
+                <h4 className="text-sm font-medium mb-2 text-[var(--text-primary)]">Model Status</h4>
+                <div className="flex items-center gap-2 text-xs">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="text-[var(--text-primary)]">GLM-4.5 Active</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+================================================================================
+
+// Path: src/components/Sidebar.tsx
+// frontend/src/components/Sidebar.tsx
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  Home,
+  Users,
+  Brain,
+  FileCode,
+  ChevronLeft,
+  ChevronRight,
+  Search,
+  Clock,
+  Activity,
+  Zap,
+  Database,
+  Folder,
+  MessageSquare,
+  Plus
+} from 'lucide-react';
+import clsx from 'clsx';
+import { motion, AnimatePresence } from 'framer-motion';
+
+interface NavItem {
+  icon: React.ReactNode;
+  label: string;
+  id: string;
+  badge?: number | string;
+  tooltip?: string;
+  disabled?: boolean;
+  submenu?: NavItem[];
+}
+
+interface SidebarProps {
+  collapsed: boolean;
+  onToggle: () => void;
+  onNavClick?: (label: string, id: string) => void;
+  activeItem?: string;
+  className?: string;
+  recentItems?: Array<{
+    label: string;
+    id: string;
+    icon?: React.ReactNode;
+    timestamp: string;
+  }>;
+  systemStats?: {
+    projects: number;
+    agents: number;
+    files: number;
+    status: 'healthy' | 'warning' | 'error';
+  };
+  // Project-related props
+  projects?: Array<{
+    id: number;
+    name: string;
+    conversations?: Array<{
+      id: number;
+      title: string;
+      lastUpdated: string;
+    }>;
+  }>;
+  activeProjectId?: number | null;
+  activeConversationId?: number | null;
+}
+
+// Updated navigation structure
+const mainNavItems: NavItem[] = [
+  {
+    icon: <Home size={18} />,
+    label: 'Dashboard',
+    id: 'dashboard',
+    tooltip: 'Project dashboard and overview'
+  },
+  {
+    icon: <Database size={18} />,
+    label: 'Projects',
+    id: 'projects',
+    tooltip: 'Manage your projects and conversations',
+    submenu: [
+      { icon: <Plus size={16} />, label: 'New Project', id: 'new-project' },
+      { icon: <Folder size={16} />, label: 'All Projects', id: 'all-projects' },
+    ]
+  },
+  {
+    icon: <Users size={18} />,
+    label: 'Agents',
+    id: 'agents',
+    tooltip: 'AI agents and orchestration',
+    submenu: [
+      { icon: <Activity size={16} />, label: 'Orchestrations', id: 'orchestrations' },
+      { icon: <Zap size={16} />, label: 'Performance', id: 'agent-performance' },
+    ]
+  },
+  {
+    icon: <Brain size={18} />,
+    label: 'Memory',
+    id: 'memory',
+    tooltip: 'Knowledge base and memory management'
+  },
+  {
+    icon: <FileCode size={18} />,
+    label: 'Files',
+    id: 'files',
+    tooltip: 'File management and code repository'
+  },
+];
+
+// Empty bottom nav items (removed Help and Settings)
+const bottomNavItems: NavItem[] = [];
+
+export default function Sidebar({
+  collapsed,
+  onToggle,
+  onNavClick,
+  activeItem,
+  className,
+  recentItems = [],
+  systemStats,
+  projects = [],
+  activeProjectId,
+  activeConversationId
+}: SidebarProps) {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [expandedSubmenu, setExpandedSubmenu] = useState<string | null>(null);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // Handle keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.key === 'k') {
+        event.preventDefault();
+        searchInputRef.current?.focus();
+      }
+      if (event.ctrlKey && event.key === 'b') {
+        event.preventDefault();
+        onToggle();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onToggle]);
+
+  // Clear search when collapsed
+  useEffect(() => {
+    if (collapsed) {
+      setSearchQuery('');
+      setExpandedSubmenu(null);
+    }
+  }, [collapsed]);
+
+  // Auto-expand projects if there's an active project
+  useEffect(() => {
+    if (activeProjectId && !collapsed) {
+      setExpandedSubmenu('projects');
+    }
+  }, [activeProjectId, collapsed]);
+
+  const handleNavClick = (item: NavItem, parentId?: string) => {
+    if (item.disabled) return;
+
+    if (item.submenu && !collapsed) {
+      setExpandedSubmenu(expandedSubmenu === item.id ? null : item.id);
+    } else {
+      onNavClick?.(item.label, parentId ? `${parentId}.${item.id}` : item.id);
+      if (collapsed && item.submenu) {
+        setExpandedSubmenu(null);
+      }
+    }
+  };
+
+  const filteredMainItems = mainNavItems.filter(item =>
+    !searchQuery ||
+    item.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.submenu?.some(sub => sub.label.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
+  const isActiveItem = (item: NavItem, parentId?: string) => {
+    const itemId = parentId ? `${parentId}.${item.id}` : item.id;
+    return activeItem === itemId || activeItem === item.id;
+  };
+
+  const getStatusColor = (status?: 'healthy' | 'warning' | 'error') => {
+    switch (status) {
+      case 'healthy': return 'text-green-500';
+      case 'warning': return 'text-yellow-500';
+      case 'error': return 'text-red-500';
+      default: return 'text-gray-500';
+    }
+  };
+
+  const Tooltip = ({ children, content, show }: {
+    children: React.ReactNode;
+    content: string;
+    show: boolean;
+  }) => (
+    <div className="relative group">
+      {children}
+      <AnimatePresence>
+        {show && collapsed && (
+          <motion.div
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -10 }}
+            className="absolute left-full top-1/2 -translate-y-1/2 ml-2 z-50"
+          >
+            <div className="bg-gray-900 text-white px-2 py-1 rounded text-sm whitespace-nowrap shadow-lg border border-gray-700">
+              {content}
+              <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-gray-900"></div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+
+  // Generate project submenu items dynamically
+  const getProjectSubmenuItems = (baseSubmenu: NavItem[]) => {
+    const dynamicItems = [...baseSubmenu];
+
+    // Add projects as submenu items
+    projects.forEach(project => {
+      dynamicItems.push({
+        icon: <Folder size={16} />,
+        label: project.name,
+        id: `project-${project.id}`,
+        badge: project.conversations?.length || 0,
+        submenu: [
+          { icon: <Plus size={14} />, label: 'New Conversation', id: `new-conversation-${project.id}` },
+          ...(project.conversations?.map(conv => ({
+            icon: <MessageSquare size={14} />,
+            label: conv.title,
+            id: `conversation-${conv.id}`,
+          })) || [])
+        ]
+      });
+    });
+
+    return dynamicItems;
+  };
+
+  return (
+    <motion.div
+      animate={{ width: collapsed ? 64 : 280 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      className={clsx(
+        'h-full bg-[var(--bg-secondary)] border-r border-[var(--border-color)] flex flex-col relative',
+        'shadow-lg',
+        className
+      )}
+    >
+      {/* Header Section */}
+      <div className="flex-shrink-0 p-3 border-b border-[var(--border-color)]">
+        <div className="flex items-center justify-between">
+          {!collapsed && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex items-center gap-2"
+            >
+              <div className="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">🤖</span>
+              </div>
+              <div>
+                <h2 className="text-sm font-semibold text-[var(--text-primary)]">Samriddh AI</h2>
+                <p className="text-xs text-[var(--text-muted)]">v3.0.0</p>
+              </div>
+            </motion.div>
+          )}
+
+          <Tooltip content={collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'} show={true}>
+            <button
+              onClick={onToggle}
+              className={clsx(
+                'p-2 rounded-lg transition-all duration-200',
+                'bg-[var(--bg-tertiary)] hover:bg-[var(--border-color)]',
+                'text-[var(--text-secondary)] hover:text-[var(--text-primary)]',
+                collapsed && 'mx-auto'
+              )}
+              aria-label={collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+            >
+              {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+            </button>
+          </Tooltip>
+        </div>
+      </div>
+
+      {/* Search Section */}
+      {!collapsed && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          className="flex-shrink-0 p-3 border-b border-[var(--border-color)]"
+        >
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
+            <input
+              ref={searchInputRef}
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search... (Ctrl+K)"
+              className={clsx(
+                'w-full pl-10 pr-4 py-2 rounded-lg text-sm',
+                'bg-[var(--bg-primary)] border border-[var(--border-color)]',
+                'text-[var(--text-primary)] placeholder-[var(--text-muted)]',
+                'focus:border-[var(--accent-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent-primary)]',
+                'transition-colors duration-200'
+              )}
+            />
+          </div>
+        </motion.div>
+      )}
+
+      {/* System Stats */}
+      {!collapsed && systemStats && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="flex-shrink-0 p-3 border-b border-[var(--border-color)]"
+        >
+          <div className="grid grid-cols-3 gap-2 text-xs">
+            <div className="text-center">
+              <div className="font-semibold text-[var(--text-primary)]">{systemStats.projects}</div>
+              <div className="text-[var(--text-muted)]">Projects</div>
+            </div>
+            <div className="text-center">
+              <div className="font-semibold text-[var(--text-primary)]">{systemStats.agents}</div>
+              <div className="text-[var(--text-muted)]">Agents</div>
+            </div>
+            <div className="text-center">
+              <div className="font-semibold text-[var(--text-primary)]">{systemStats.files}</div>
+              <div className="text-[var(--text-muted)]">Files</div>
+            </div>
+          </div>
+          <div className={clsx(
+            'mt-2 text-xs flex items-center justify-center gap-1',
+            getStatusColor(systemStats.status)
+          )}>
+            <Activity size={12} />
+            <span className="capitalize">{systemStats.status}</span>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Main Navigation */}
+      <nav className="flex-1 overflow-y-auto py-2">
+        <div className="px-2 space-y-1">
+          {filteredMainItems.map((item) => {
+            // Get dynamic submenu for projects
+            const submenuItems = item.id === 'projects' ? getProjectSubmenuItems(item.submenu || []) : item.submenu;
+            const itemWithSubmenu = { ...item, submenu: submenuItems };
+
+            return (
+              <div key={item.id}>
+                <Tooltip content={item.tooltip || item.label} show={hoveredItem === item.id}>
+                  <div
+                    onMouseEnter={() => setHoveredItem(item.id)}
+                    onMouseLeave={() => setHoveredItem(null)}
+                    onClick={() => handleNavClick(itemWithSubmenu)}
+                    className={clsx(
+                      'flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200',
+                      'hover:bg-[var(--bg-tertiary)]',
+                      isActiveItem(item) && 'bg-[var(--accent-primary)] text-white hover:bg-[var(--accent-primary)]',
+                      item.disabled && 'opacity-50 cursor-not-allowed',
+                      collapsed ? 'justify-center' : 'justify-between'
+                    )}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={item.label}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleNavClick(itemWithSubmenu);
+                      }
+                    }}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span className="flex-shrink-0">{item.icon}</span>
+                      {!collapsed && (
+                        <motion.span
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          className="truncate text-sm font-medium"
+                        >
+                          {item.label}
+                        </motion.span>
+                      )}
+                    </div>
+
+                    {!collapsed && (
+                      <div className="flex items-center gap-2">
+                        {item.badge && (
+                          <span className="bg-[var(--accent-secondary)] text-white text-xs px-2 py-1 rounded-full">
+                            {item.badge}
+                          </span>
+                        )}
+                        {submenuItems && (
+                          <ChevronRight
+                            size={14}
+                            className={clsx(
+                              'transition-transform duration-200',
+                              expandedSubmenu === item.id && 'rotate-90'
+                            )}
+                          />
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </Tooltip>
+
+                {/* Submenu */}
+                <AnimatePresence>
+                  {!collapsed && submenuItems && expandedSubmenu === item.id && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="ml-6 mt-1 space-y-1"
+                    >
+                      {submenuItems.map((subItem) => (
+                        <div key={subItem.id}>
+                          <div
+                            onClick={() => handleNavClick(subItem, item.id)}
+                            className={clsx(
+                              'flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-colors duration-200',
+                              'hover:bg-[var(--bg-tertiary)]',
+                              isActiveItem(subItem, item.id) && 'bg-[var(--accent-primary)] text-white',
+                              subItem.disabled && 'opacity-50 cursor-not-allowed',
+                              activeProjectId === parseInt(subItem.id.replace('project-', '')) && 'bg-[var(--bg-tertiary)]'
+                            )}
+                          >
+                            {subItem.icon}
+                            <span className="text-sm flex-1 truncate">{subItem.label}</span>
+                            {subItem.badge && (
+                              <span className="bg-[var(--accent-secondary)] text-white text-xs px-2 py-1 rounded-full">
+                                {subItem.badge}
+                              </span>
+                            )}
+                            {subItem.submenu && (
+                              <ChevronRight
+                                size={12}
+                                className={clsx(
+                                  'transition-transform duration-200',
+                                  expandedSubmenu === `${item.id}-${subItem.id}` && 'rotate-90'
+                                )}
+                              />
+                            )}
+                          </div>
+
+                          {/* Project Conversations */}
+                          <AnimatePresence>
+                            {subItem.submenu && expandedSubmenu === `${item.id}-${subItem.id}` && (
+                              <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                className="ml-6 mt-1 space-y-1"
+                              >
+                                {subItem.submenu.map((convItem) => (
+                                  <div
+                                    key={convItem.id}
+                                    onClick={() => handleNavClick(convItem, `${item.id}.${subItem.id}`)}
+                                    className={clsx(
+                                      'flex items-center gap-2 px-3 py-1.5 rounded-lg cursor-pointer transition-colors duration-200',
+                                      'hover:bg-[var(--bg-tertiary)]',
+                                      activeConversationId === parseInt(convItem.id.replace('conversation-', '')) && 'bg-[var(--accent-primary)] text-white',
+                                      convItem.disabled && 'opacity-50 cursor-not-allowed'
+                                    )}
+                                  >
+                                    {convItem.icon}
+                                    <span className="text-xs truncate">{convItem.label}</span>
+                                  </div>
+                                ))}
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Recent Items */}
+        {!collapsed && recentItems.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="mt-6 px-2"
+          >
+            <div className="text-xs uppercase text-[var(--text-muted)] mb-2 px-3">Recent</div>
+            <div className="space-y-1">
+              {recentItems.slice(0, 3).map((item, index) => (
+                <div
+                  key={`${item.id}-${index}`}
+                  onClick={() => onNavClick?.(item.label, item.id)}
+                  className="flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer hover:bg-[var(--bg-tertiary)] transition-colors duration-200"
+                >
+                  <span className="flex-shrink-0">
+                    {item.icon || <Clock size={14} />}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm truncate">{item.label}</div>
+                    <div className="text-xs text-[var(--text-muted)]">
+                      {new Date(item.timestamp).toLocaleDateString()}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </nav>
+
+      {/* Bottom Navigation - Now Empty */}
+      {bottomNavItems.length > 0 && (
+        <div className="flex-shrink-0 border-t border-[var(--border-color)] p-2">
+          <div className="space-y-1">
+            {bottomNavItems.map((item) => (
+              <Tooltip key={item.id} content={item.tooltip || item.label} show={hoveredItem === item.id}>
+                <div
+                  onMouseEnter={() => setHoveredItem(item.id)}
+                  onMouseLeave={() => setHoveredItem(null)}
+                  onClick={() => handleNavClick(item)}
+                  className={clsx(
+                    'flex items-center gap-3 px-3 py-2 rounded-lg cursor-pointer transition-colors duration-200',
+                    'hover:bg-[var(--bg-tertiary)]',
+                    isActiveItem(item) && 'bg-[var(--accent-primary)] text-white',
+                    collapsed ? 'justify-center' : 'justify-start'
+                  )}
+                >
+                  {item.icon}
+                  {!collapsed && <span className="text-sm">{item.label}</span>}
+                </div>
+              </Tooltip>
+            ))}
+          </div>
+        </div>
+      )}
+    </motion.div>
+  );
+}
+
+================================================================================
+
+// Path: src/hooks/useOrchestrationWebSocket.ts
+// src/hooks/useOrchestrationWebSocket.ts
+
+import { useEffect, useState, useCallback, useRef } from 'react';
+
+export interface OrchestrationProgress {
+  type: string;
+  orchestration_id?: number;
+  status?: string;
+  progress_percentage?: number;
+  completed_tasks?: number;
+  total_tasks?: number;
+  current_agent_task_id?: number;
+  agent_task_id?: number;
+  agent_type?: string;
+  message?: string;
+  timestamp?: string;
+  error?: string;
+  output?: any;
+}
+
+export function useOrchestrationWebSocket(orchestrationId: number | null) {
+  const [isConnected, setIsConnected] = useState(false);
+  const [progress, setProgress] = useState<OrchestrationProgress | null>(null);
+  const [history, setHistory] = useState<OrchestrationProgress[]>([]);
+  const ws = useRef<WebSocket | null>(null);
+  const reconnectTimeout = useRef<NodeJS.Timeout>();
+
+  const connect = useCallback(() => {
+    if (!orchestrationId) return;
+
+    try {
+      ws.current = new WebSocket(`ws://localhost:8000/ws/orchestration/${orchestrationId}`);
+
+      ws.current.onopen = () => {
+        setIsConnected(true);
+        console.log(`Connected to orchestration ${orchestrationId} WebSocket`);
+      };
+
+      ws.current.onmessage = (event) => {
+        try {
+          const data: OrchestrationProgress = JSON.parse(event.data);
+          setProgress(data);
+          setHistory(prev => [...prev, data]);
+        } catch (error) {
+          console.error('Failed to parse WebSocket message:', error);
+        }
+      };
+
+      ws.current.onclose = () => {
+        setIsConnected(false);
+        console.log('Orchestration WebSocket disconnected');
+
+        // Auto-reconnect after 3 seconds if orchestration is still active
+        if (orchestrationId) {
+          reconnectTimeout.current = setTimeout(() => {
+            connect();
+          }, 3000);
+        }
+      };
+
+      ws.current.onerror = (error) => {
+        console.error('Orchestration WebSocket error:', error);
+        setIsConnected(false);
+      };
+
+    } catch (error) {
+      console.error('Failed to connect to orchestration WebSocket:', error);
+    }
+  }, [orchestrationId]);
+
+  const disconnect = useCallback(() => {
+    if (reconnectTimeout.current) {
+      clearTimeout(reconnectTimeout.current);
+    }
+
+    if (ws.current) {
+      ws.current.close();
+      ws.current = null;
+    }
+
+    setIsConnected(false);
+  }, []);
+
+  const sendMessage = useCallback((message: any) => {
+    if (ws.current && isConnected) {
+      ws.current.send(JSON.stringify(message));
+    }
+  }, [isConnected]);
+
+  useEffect(() => {
+    if (orchestrationId) {
+      connect();
+    } else {
+      disconnect();
+    }
+
+    return () => {
+      disconnect();
+    };
+  }, [orchestrationId, connect, disconnect]);
+
+  // Send ping every 30 seconds to keep connection alive
+  useEffect(() => {
+    if (isConnected) {
+      const interval = setInterval(() => {
+        sendMessage({ type: 'ping' });
+      }, 30000);
+
+      return () => clearInterval(interval);
+    }
+  }, [isConnected, sendMessage]);
+
+  return {
+    isConnected,
+    progress,
+    history,
+    sendMessage,
+    connect,
+    disconnect
+  };
+}
+
+================================================================================
+
+// Path: src/layout/MainLayout.tsx
+// frontend/src/layout/MainLayout.tsx
+import React, { useState, useCallback, useEffect } from 'react';
+import Sidebar from '../components/Sidebar';
+import Header from '../components/Header';
+import Chat from '../components/Chat';
+import RightPanel from '../components/RightPanel';
+import Footer from '../components/Footer';
+import CreateProjectModal from '../components/CreateProjectModal';
+
+export default function MainLayout() {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [projectId, setProjectId] = useState<number | null>(null);
+  const [conversationId, setConversationId] = useState<number | null>(null);
+  const [directoryContext, setDirectoryContext] = useState<any[]>([]);
+  const [rightPanelTab, setRightPanelTab] = useState<'files' | 'orchestrations' | 'agents'>('orchestrations');
+  const [activeNavItem, setActiveNavItem] = useState<string>('dashboard');
+
+  // Modal state management
+  const [showCreateProjectModal, setShowCreateProjectModal] = useState(false);
+  const [projects, setProjects] = useState([
+    {
+      id: 1,
+      name: 'Backend API',
+      conversations: [
+        { id: 1, title: 'FastAPI Setup', lastUpdated: '2025-08-27T10:00:00Z' },
+        { id: 2, title: 'Database Models', lastUpdated: '2025-08-27T11:00:00Z' }
+      ]
+    },
+    {
+      id: 2,
+      name: 'Frontend Components',
+      conversations: [
+        { id: 3, title: 'Sidebar Implementation', lastUpdated: '2025-08-27T12:00:00Z' }
+      ]
+    }
+  ]);
+
+  // System stats (updated dynamically)
+  const systemStats = {
+    projects: projects.length,
+    agents: 5,
+    files: directoryContext.length,
+    status: 'healthy' as const
+  };
+
+  // Recent items
+  const recentItems = [
+    {
+      label: 'Sidebar Component',
+      id: 'recent-1',
+      timestamp: new Date().toISOString()
+    },
+    {
+      label: 'API Integration',
+      id: 'recent-2',
+      timestamp: new Date(Date.now() - 86400000).toISOString()
+    }
+  ];
+
+  // Load projects from backend (optional enhancement)
+  const loadProjects = useCallback(async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/projects');
+      if (response.ok) {
+        const projectsData = await response.json();
+        if (Array.isArray(projectsData)) {
+          setProjects(projectsData);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load projects:', error);
+      // Keep using mock data if API fails
+    }
+  }, []);
+
+  // Load projects on component mount
+  useEffect(() => {
+    loadProjects();
+  }, [loadProjects]);
+
+  // Handle project creation success
+  const handleProjectCreated = useCallback((newProject: any) => {
+    try {
+      if (!newProject || !newProject.id) {
+        console.error('Invalid project data received:', newProject);
+        return;
+      }
+
+      console.log('New project created successfully:', newProject);
+
+      // Update projects list
+      setProjects(prevProjects => {
+        // Check if project already exists (avoid duplicates)
+        const exists = prevProjects.some(p => p.id === newProject.id);
+        if (exists) {
+          return prevProjects;
+        }
+
+        // Add new project with empty conversations array
+        const projectWithConversations = {
+          ...newProject,
+          conversations: []
+        };
+
+        return [projectWithConversations, ...prevProjects];
+      });
+
+      // Set the new project as active
+      setProjectId(newProject.id);
+      setConversationId(null);
+
+      // Close modal
+      setShowCreateProjectModal(false);
+
+      // Update active nav item to reflect project selection
+      setActiveNavItem(`project-${newProject.id}`);
+
+      // Optionally switch to files tab to start working
+      setRightPanelTab('files');
+
+    } catch (error) {
+      console.error('Error handling project creation:', error);
+    }
+  }, []);
+
+  // Handle project creation error
+  const handleProjectCreationError = useCallback((error: string) => {
+    console.error('Project creation failed:', error);
+
+    // In a production app, you might want to show a toast notification here
+    // For now, we'll just log the error
+
+    // Don't close modal on error - let user retry or manually close
+  }, []);
+
+  // Enhanced navigation handler with proper error handling
+  const handleNavClick = useCallback((label: string, id: string) => {
+    try {
+      if (!id) {
+        console.warn('Navigation clicked with empty ID');
+        return;
+      }
+
+      setActiveNavItem(id);
+
+      // Handle different navigation patterns
+      if (id.startsWith('project-')) {
+        const projectIdStr = id.replace('project-', '');
+        const newProjectId = parseInt(projectIdStr, 10);
+
+        if (isNaN(newProjectId)) {
+          console.error('Invalid project ID:', projectIdStr);
+          return;
+        }
+
+        // Verify project exists
+        const projectExists = projects.some(p => p.id === newProjectId);
+        if (!projectExists) {
+          console.warn('Project not found:', newProjectId);
+          // Optionally reload projects here
+          loadProjects();
+          return;
+        }
+
+        setProjectId(newProjectId);
+        setConversationId(null);
+
+      } else if (id.startsWith('conversation-')) {
+        const conversationIdStr = id.replace('conversation-', '');
+        const newConversationId = parseInt(conversationIdStr, 10);
+
+        if (isNaN(newConversationId)) {
+          console.error('Invalid conversation ID:', conversationIdStr);
+          return;
+        }
+
+        setConversationId(newConversationId);
+
+      } else if (id.startsWith('new-conversation-')) {
+        const projectIdStr = id.replace('new-conversation-', '');
+        const targetProjectId = parseInt(projectIdStr, 10);
+
+        if (isNaN(targetProjectId)) {
+          console.error('Invalid project ID for new conversation:', projectIdStr);
+          return;
+        }
+
+        setProjectId(targetProjectId);
+        setConversationId(null);
+        console.log(`Creating new conversation for project ${targetProjectId}`);
+
+      } else if (id === 'new-project' || id === 'projects.new-project') {
+      // } else if (id === 'new-project') {
+        // Open create project modal
+        setShowCreateProjectModal(true);
+
+      } else {
+        // Handle other navigation items
+        switch (id) {
+          case 'orchestrations':
+          case 'agents':
+          case 'agent-performance':
+            setRightPanelTab('orchestrations');
+            break;
+
+          case 'files':
+            setRightPanelTab('files');
+            break;
+
+          case 'dashboard':
+          case 'memory':
+            // These don't require special handling yet
+            break;
+
+          default:
+            console.log(`Navigation to: ${label} (${id})`);
+        }
+      }
+    } catch (error) {
+      console.error('Error in navigation handler:', error);
+    }
+  }, [projects, loadProjects]);
+
+  // Handle directory context with error handling
+  const handleDirectoryContextUpdate = useCallback((files: any[]) => {
+    try {
+      if (!Array.isArray(files)) {
+        console.error('Invalid files data provided to directory context:', files);
+        return;
+      }
+
+      setDirectoryContext(files);
+      console.log("Directory context updated:", files.length, "files");
+    } catch (error) {
+      console.error('Error updating directory context:', error);
+    }
+  }, []);
+
+  // Handle sidebar toggle with persistence (optional)
+  const handleSidebarToggle = useCallback(() => {
+    const newCollapsedState = !sidebarCollapsed;
+    setSidebarCollapsed(newCollapsedState);
+
+    // Optionally persist sidebar state in localStorage
+    try {
+      localStorage.setItem('sidebarCollapsed', JSON.stringify(newCollapsedState));
+    } catch (error) {
+      // Handle localStorage errors silently
+      console.warn('Failed to save sidebar state:', error);
+    }
+  }, [sidebarCollapsed]);
+
+  // Load sidebar state from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('sidebarCollapsed');
+      if (saved !== null) {
+        setSidebarCollapsed(JSON.parse(saved));
+      }
+    } catch (error) {
+      // Handle localStorage errors silently
+      console.warn('Failed to load sidebar state:', error);
+    }
+  }, []);
+
+  return (
+    <div
+      className="h-screen flex flex-col overflow-hidden"
+      style={{
+        backgroundColor: 'var(--bg-primary)',
+        color: 'var(--text-primary)'
+      }}
+    >
+      {/* Header */}
+      <div className="flex-shrink-0">
+        <Header
+          onToggleSidebar={handleSidebarToggle}
+          sidebarCollapsed={sidebarCollapsed}
+        />
+      </div>
+
+      {/* Main area */}
+      <div className="flex flex-1 min-h-0">
+        {/* Enhanced Sidebar */}
+        <div className="flex-shrink-0">
+          <Sidebar
+            collapsed={sidebarCollapsed}
+            onToggle={handleSidebarToggle}
+            onNavClick={handleNavClick}
+            activeItem={activeNavItem}
+            recentItems={recentItems}
+            systemStats={systemStats}
+            projects={projects}
+            activeProjectId={projectId}
+            activeConversationId={conversationId}
+          />
+        </div>
+
+        {/* Chat */}
+        <div className="flex-1 min-w-0">
+          <Chat
+            projectId={projectId}
+            conversationId={conversationId}
+            onNewConversation={(cid, pid) => {
+              try {
+                setConversationId(cid);
+                setProjectId(pid);
+                console.log(`New conversation created: ${cid} for project: ${pid}`);
+              } catch (error) {
+                console.error('Error handling new conversation:', error);
+              }
+            }}
+            directoryContext={directoryContext}
+          />
+        </div>
+
+        {/* Right Panel */}
+        <div className="flex-shrink-0">
+          <RightPanel
+            projectId={projectId}
+            onUseDirectoryContext={handleDirectoryContextUpdate}
+            activeTab={rightPanelTab}
+            onTabChange={setRightPanelTab}
+          />
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="flex-shrink-0">
+        <Footer />
+      </div>
+
+      {/* Create Project Modal */}
+      <CreateProjectModal
+        isOpen={showCreateProjectModal}
+        onClose={() => setShowCreateProjectModal(false)}
+        onProjectCreated={handleProjectCreated}
+        onError={handleProjectCreationError}
+      />
+    </div>
+  );
+}
+
+================================================================================
+
+// Path: src/main.tsx
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './styles/index.css'  // ✅ Only import your custom styles
+import App from './App.tsx'
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+
+================================================================================
+
+// Path: src/services/orchestrationApi.ts
+// src/services/orchestrationApi.ts
+
+const API_BASE_URL = 'http://localhost:8000';
+
+export interface OrchestrationTask {
+  id: number;
+  project_id: number;
+  name: string;
+  description: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AgentTask {
+  id: number;
+  orchestration_task_id: number;
+  agent_type: string;
+  status: string;
+  started_at?: string;
+  finished_at?: string;
+}
+
+export interface OrchestrationStatus {
+  orchestration_id: number;
+  status: string;
+  progress_percentage: number;
+  total_tasks: number;
+  completed_tasks: number;
+  failed_tasks: number;
+  running_tasks: number;
+  created_at: string;
+  updated_at: string;
+  agent_tasks: AgentTask[];
+}
+
+export interface CreateAndStartRequest {
+  project_id: number;
+  description: string;
+}
+
+export interface PlanResponse {
+  tasks: Array<{
+    id: string;
+    name: string;
+    type: string;
+    description: string;
+    depends_on: string[];
+    status: string;
+  }>;
+}
+
+export const orchestrationApi = {
+  async createAndStart(request: CreateAndStartRequest) {
+    const response = await fetch(`${API_BASE_URL}/api/orchestration/create-and-start`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(request)
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to create and start orchestration: ${response.statusText}`);
+    }
+
+    return response.json();
+  },
+
+  async getStatus(orchestrationId: number): Promise<OrchestrationStatus> {
+    const response = await fetch(`${API_BASE_URL}/api/orchestration/${orchestrationId}/status`);
+
+    if (!response.ok) {
+      throw new Error(`Failed to get orchestration status: ${response.statusText}`);
+    }
+
+    return response.json();
+  },
+
+  async getPlan(description: string): Promise<PlanResponse> {
+    const response = await fetch(`${API_BASE_URL}/api/orchestration/plan`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ description })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to get orchestration plan: ${response.statusText}`);
+    }
+
+    return response.json();
+  },
+
+  async getActiveOrchestrations() {
+    const response = await fetch(`${API_BASE_URL}/api/orchestration/active`);
+
+    if (!response.ok) {
+      throw new Error(`Failed to get active orchestrations: ${response.statusText}`);
+    }
+
+    return response.json();
+  },
+
+  async getProjectOrchestrations(projectId: number) {
+    const response = await fetch(`${API_BASE_URL}/api/agent_tasks/orchestrations/project/${projectId}`);
+
+    if (!response.ok) {
+      throw new Error(`Failed to get project orchestrations: ${response.statusText}`);
+    }
+
+    return response.json();
+  }
+};
+
+================================================================================
+
+// Path: src/styles/index.css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #0f0f23;
+  --bg-secondary: #1a1a2e;
+  --bg-tertiary: #16213e;
+  --text-primary: #e6e6e6;
+  --text-secondary: #a8a8b3;
+  --text-muted: #737380;
+  --accent-primary: #6366f1;
+  --accent-secondary: #8b5cf6;
+  --border-color: #2d3748;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --error-color: #ef4444;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+/* Custom component classes */
+@layer components {
+  .gradient-bg {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  }
+
+  .sidebar-transition {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .glass-effect {
+    backdrop-filter: blur(10px);
+    background: rgba(26, 26, 46, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-tertiary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+================================================================================
+
+// Path: src/vite-env.d.ts
+/// <reference types="vite/client" />
+
+================================================================================
+
+// Path: tailwind.config.js
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          50: '#f0f9ff',
+          500: '#6366f1',
+          600: '#4f46e5',
+          700: '#4338ca',
+        },
+        gray: {
+          850: '#1f2937',
+          950: '#0f0f23',
+        }
+      },
+      animation: {
+        'pulse-slow': 'pulse 3s ease-in-out infinite',
+        'bounce-light': 'bounce 2s infinite',
+      }
+    },
+  },
+  plugins: [require('@tailwindcss/typography')],
+}
+
+================================================================================
+
+// Path: tsconfig.app.json
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
+  },
+  "include": ["src"]
+}
+
+================================================================================
+
+// Path: tsconfig.json
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}
+
+================================================================================
+
+// Path: tsconfig.node.json
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
+  },
+  "include": ["vite.config.ts"]
+}
+
+================================================================================
+
+// Path: vite.config.ts
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react()],
+})
+
+================================================================================
+
